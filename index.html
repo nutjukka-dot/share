@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>LocalSend Web</title>
+  <meta name="description" content="ส่งไฟล์ ลิงก์ และข้อความ ระหว่างอุปกรณ์ที่เปิดเว็บนี้อยู่ แบบตรงถึงกัน ไม่ผ่านเซิร์ฟเวอร์">
+  <meta name="theme-color" content="#0e8f7e">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <img src="icon.svg" alt="" width="34" height="34">
+      <div>
+        <div class="brand-name">LocalSend Web</div>
+        <div class="status" id="status"><span class="dot"></span><span id="statusText">กำลังเชื่อมต่อ…</span></div>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button class="chip-btn" id="roomBtn" title="ห้อง / เชื่อมต่ออุปกรณ์">
+        <svg viewBox="0 0 24 24"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h3v3h-3zM18 18h3v3h-3zM18 14h3M14 18v3"/></svg>
+        <span id="roomLabel">ห้อง</span>
+      </button>
+      <button class="icon-btn" id="settingsBtn" title="ตั้งค่า">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="col">
+      <div class="card me-card">
+        <div class="avatar" id="myAvatar"></div>
+        <div class="me-info">
+          <div class="label">อุปกรณ์นี้</div>
+          <button class="me-name" id="myName" title="เปลี่ยนชื่อ">…</button>
+          <div class="sub" id="myDevice"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <h2>สิ่งที่จะส่ง</h2>
+          <button class="link-btn" id="clearSel" hidden>ล้างทั้งหมด</button>
+        </div>
+        <div class="pick-row">
+          <button class="pick" data-pick="file">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+            <span>ไฟล์</span>
+          </button>
+          <button class="pick" data-pick="media">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+            <span>รูป/วิดีโอ</span>
+          </button>
+          <button class="pick" data-pick="text">
+            <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+            <span>ข้อความ</span>
+          </button>
+          <button class="pick" data-pick="link">
+            <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+            <span>ลิงก์</span>
+          </button>
+          <button class="pick" data-pick="paste">
+            <svg viewBox="0 0 24 24"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>
+            <span>วาง</span>
+          </button>
+        </div>
+        <div class="selection" id="selection">
+          <div class="empty-sel">ลากไฟล์มาวาง หรือกด Ctrl/⌘+V เพื่อวาง</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <h2>อุปกรณ์ใกล้เคียง</h2>
+          <span class="count" id="devCount">0</span>
+        </div>
+        <div class="devices" id="devices"></div>
+        <div class="radar" id="radar">
+          <div class="rings"><span></span><span></span><span></span><div class="core"></div></div>
+          <p class="radar-title">กำลังค้นหาอุปกรณ์…</p>
+          <p class="radar-sub">เปิดเว็บนี้บนอุปกรณ์อื่นที่ใช้ Wi‑Fi เดียวกัน<br>หรือกดปุ่ม <b>ห้อง</b> แล้วสแกน QR เพื่อเข้าห้องเดียวกัน</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="col">
+      <div class="card history-card">
+        <div class="card-head">
+          <h2>ประวัติ</h2>
+          <button class="link-btn" id="clearHistory" hidden>ล้าง</button>
+        </div>
+        <div id="history" class="history">
+          <div class="empty-history" id="emptyHistory">
+            <svg viewBox="0 0 24 24"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
+            <p>ยังไม่มีการรับ–ส่ง</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <input type="file" id="fileInput" multiple hidden>
+  <input type="file" id="mediaInput" multiple accept="image/*,video/*" hidden>
+
+  <!-- Text / link composer -->
+  <dialog id="composeDlg" class="dlg">
+    <form method="dialog" class="dlg-body" id="composeForm" novalidate>
+      <h3 id="composeTitle">ข้อความ</h3>
+      <textarea id="composeText" rows="6" placeholder="พิมพ์ข้อความ…"></textarea>
+      <input id="composeLink" type="url" inputmode="url" placeholder="https://…">
+      <div class="dlg-actions">
+        <button type="button" class="btn ghost" data-close>ยกเลิก</button>
+        <button type="submit" class="btn primary" id="composeOk">เพิ่ม</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Quick send when clicking a device without selection -->
+  <dialog id="quickDlg" class="dlg">
+    <div class="dlg-body">
+      <h3>ส่งให้ <span id="quickName"></span></h3>
+      <div class="pick-row quick">
+        <button class="pick" data-quick="file"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg><span>ไฟล์</span></button>
+        <button class="pick" data-quick="media"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>รูป/วิดีโอ</span></button>
+        <button class="pick" data-quick="text"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg><span>ข้อความ</span></button>
+        <button class="pick" data-quick="link"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg><span>ลิงก์</span></button>
+        <button class="pick" data-quick="paste"><svg viewBox="0 0 24 24"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg><span>คลิปบอร์ด</span></button>
+      </div>
+      <div class="dlg-actions"><button class="btn ghost" data-close>ปิด</button></div>
+    </div>
+  </dialog>
+
+  <!-- Incoming request -->
+  <dialog id="offerDlg" class="dlg">
+    <div class="dlg-body">
+      <div class="offer-head">
+        <div class="avatar" id="offerAvatar"></div>
+        <div>
+          <h3 id="offerFrom"></h3>
+          <div class="sub" id="offerSummary"></div>
+        </div>
+      </div>
+      <div class="offer-list" id="offerList"></div>
+      <div class="dlg-actions">
+        <button class="btn ghost" id="offerDecline">ปฏิเสธ</button>
+        <button class="btn primary" id="offerAccept">รับ</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Room / QR -->
+  <dialog id="roomDlg" class="dlg">
+    <div class="dlg-body">
+      <h3>เชื่อมต่ออุปกรณ์</h3>
+      <p class="sub" id="roomMode"></p>
+      <div class="room-code-row">
+        <div class="room-code" id="roomCode">——</div>
+        <button class="btn ghost small" id="copyRoomLink">คัดลอกลิงก์</button>
+      </div>
+      <div class="qr" id="qr"></div>
+      <p class="sub center">สแกน QR นี้ด้วยมือถือ เพื่อเข้าห้องเดียวกันได้ทันที แม้อยู่คนละเครือข่าย</p>
+      <form class="join-row" id="joinForm">
+        <input id="joinInput" placeholder="ใส่รหัสห้อง" autocomplete="off" autocapitalize="characters" maxlength="16">
+        <button class="btn primary" type="submit">เข้าห้อง</button>
+      </form>
+      <div class="dlg-actions spread">
+        <button class="btn ghost small" id="newRoom">สร้างห้องส่วนตัวใหม่</button>
+        <button class="btn ghost small" id="autoRoom">ใช้โหมดอัตโนมัติ (Wi‑Fi เดียวกัน)</button>
+      </div>
+      <div class="dlg-actions"><button class="btn ghost" data-close>ปิด</button></div>
+    </div>
+  </dialog>
+
+  <!-- Settings -->
+  <dialog id="settingsDlg" class="dlg">
+    <form method="dialog" class="dlg-body" id="settingsForm">
+      <h3>ตั้งค่า</h3>
+      <label class="field">
+        <span>ชื่ออุปกรณ์</span>
+        <input id="nameInput" maxlength="32" required>
+      </label>
+      <label class="toggle">
+        <input type="checkbox" id="autoAccept">
+        <span class="track"></span>
+        <span class="t-label">รับอัตโนมัติ<small>ไม่ต้องกดยืนยันเมื่อมีคนส่งมา</small></span>
+      </label>
+      <label class="toggle">
+        <input type="checkbox" id="autoSave">
+        <span class="track"></span>
+        <span class="t-label">บันทึกไฟล์อัตโนมัติ<small>ดาวน์โหลดทันทีเมื่อรับเสร็จ</small></span>
+      </label>
+      <p class="sub small-note">ไฟล์ถูกส่งตรงระหว่างอุปกรณ์ด้วย WebRTC (เข้ารหัส) ไม่มีการอัปโหลดขึ้นเซิร์ฟเวอร์</p>
+      <div class="dlg-actions">
+        <button type="button" class="btn ghost" data-close>ยกเลิก</button>
+        <button type="submit" class="btn primary">บันทึก</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="drop-overlay" id="dropOverlay"><div>วางไฟล์ที่นี่</div></div>
+  <div class="toasts" id="toasts"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
